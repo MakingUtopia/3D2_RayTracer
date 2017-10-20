@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="RayTracingFramework::Ray" Collapsed="true">
+    <Position X="3.25" Y="4.75" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AgAAABRBAAAACAAAAAAAAAAAAAAAAAAAgAAAAQAAAAA=</HashCode>
+      <FileName>RayTracingFramework\Ray.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::ILight" Collapsed="true">
+    <Position X="1.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAJA=</HashCode>
+      <FileName>RayTracingFramework\Light\ILight.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::Camera" Collapsed="true">
+    <Position X="5.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgGAAAAAAgAAAAAQAAAAQAAAEAgAAAAAAIAAAIAEBA=</HashCode>
+      <FileName>RayTracingFramework\VirtualObject\Camera\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::IShadingModel" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\ShadingModels\IShadingModel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::IVirtualObject" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QACgQAwAAAAAiAbAABgAAIAIFAYAAAAAAABAAAFCAgI=</HashCode>
+      <FileName>RayTracingFramework\VirtualObject\IVirtualObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::IScene" Collapsed="true">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAgEAAAAAAAAAAAAAAAgABAQAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\VirtualObject\ISceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::ISceneManager" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIIAAAAAiCAEIAgEAAAAAAAAAAJAAAAgABASAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\VirtualObject\ISceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::Paralelepiped" Collapsed="true">
+    <Position X="5.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAABAAAAAAAQBAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\GeometricPrimitives\Paralelepiped.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::Plane" Collapsed="true">
+    <Position X="7.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAQAAAAAABAAAIApBEAAAA=</HashCode>
+      <FileName>RayTracingFramework\GeometricPrimitives\Plane.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::Sphere" Collapsed="true">
+    <Position X="10" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\GeometricPrimitives\Sphere.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::PointLight" Collapsed="true">
+    <Position X="1.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAIAAAAAAAAAAAAACAAAAAAAAAAIAQAAIAAAAJA=</HashCode>
+      <FileName>RayTracingFramework\Light\PointLight.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::Material" Collapsed="true">
+    <Position X="3.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEhBABAAAAAEgAAAAAABACAAAIAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\Material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayTracingFramework::IGeometry" Collapsed="true">
+    <Position X="7.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAiAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\GeometricPrimitives\IGeometry.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Typedef Name="RayTracingFramework::Colour" Collapsed="true">
+    <Position X="0.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RayTracingFramework\RayTracingPrerequisites.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

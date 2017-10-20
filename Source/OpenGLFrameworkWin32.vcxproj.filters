@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="examplePrograms">
+      <UniqueIdentifier>{6f2d59f9-1040-4ef8-9501-ade21f1d472a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework">
+      <UniqueIdentifier>{0da7ef64-58da-4f11-bba8-1ba4054d95fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework\VirtualObject">
+      <UniqueIdentifier>{d299d3dc-e48b-48f8-bac2-c69ec37cc5ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework\VirtualObject\Camera">
+      <UniqueIdentifier>{a5dac8c2-127a-44db-86cd-0411310780cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework\GeometricPrimitives">
+      <UniqueIdentifier>{a5d35e12-c0fa-4883-bb33-0eeb0e803202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework\ShadingModels">
+      <UniqueIdentifier>{0e45b212-59ca-4df8-bbac-53d622cb9e02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RayTracingFramework\Light">
+      <UniqueIdentifier>{8a701c94-6d41-4d7f-ba05-8a85df56c596}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RayTracingFramework\VirtualObject\IVirtualObject.cpp">
+      <Filter>RayTracingFramework\VirtualObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\VirtualObject\ISceneManager.cpp">
+      <Filter>RayTracingFramework\VirtualObject</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\ShadingModels\IShadingModel.cpp">
+      <Filter>RayTracingFramework\ShadingModels</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\Light\ILight.cpp">
+      <Filter>RayTracingFramework\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\Plane.cpp">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClCompile>
+    <ClCompile Include="examplePrograms\main.cpp">
+      <Filter>examplePrograms</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\IGeometry.cpp">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\VirtualObject\Camera\Camera.cpp">
+      <Filter>RayTracingFramework\VirtualObject\Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RayTracingFramework\VirtualObject\IVirtualObject.h">
+      <Filter>RayTracingFramework\VirtualObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\Ray.h">
+      <Filter>RayTracingFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\RayTracingPrerequisites.h">
+      <Filter>RayTracingFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\VirtualObject\ISceneManager.h">
+      <Filter>RayTracingFramework\VirtualObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\ShadingModels\IShadingModel.h">
+      <Filter>RayTracingFramework\ShadingModels</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\Light\ILight.h">
+      <Filter>RayTracingFramework\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\Plane.h">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\Material.h">
+      <Filter>RayTracingFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\IGeometry.h">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\VirtualObject\Camera\Camera.h">
+      <Filter>RayTracingFramework\VirtualObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\Light\DirectionalLight.h">
+      <Filter>RayTracingFramework\Light</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+</Project>
