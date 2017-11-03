@@ -29,9 +29,8 @@ int main(int arg, char **argv)
 	RayTracingFramework::IScene& scene = createScene();
 
 	//2. Define camera
-	RayTracingFramework::Camera cam(scene, imageWidth, imageHeight, 1, -1, -1, 1, -1, -100);								//create camera using fields top, bottom, left, right, near and far
-
-																															//3. Raytracing loop. 
+	RayTracingFramework::Camera cam(scene, imageWidth, imageHeight, 1, -1, -1, 1, -1, -1000);								//create camera using fields top, bottom, left, right, near and far
+																											//3. Raytracing loop. 
 	for (int r = 0; r < imageHeight; r++) {
 		for (int c = 0; c < imageWidth; c++) {
 			//2.1. Create one ray per pixel
@@ -80,13 +79,13 @@ RayTracingFramework::IScene& createScene() {
 
 	//2.1. A Sphere: 
 	//  A) Its geometry: A plane described using the position of its origin, as point (0,-30,0,1); and its normal vector (0,1,0,0).
-	RayTracingFramework::IGeometry*g2 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(50);
+	RayTracingFramework::IGeometry*g2 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(20);
 	//  B) Its material:
 	RayTracingFramework::Material*m2 = new RayTracingFramework::Material;
 	m2->K_a = 0.15f; m2->K_d = 0.85f; m2->diffuseColour = RayTracingFramework::Colour(0.65f, 0.70f, 0.2);			//Material defines other properties (not used yet). 
 																													//  C) The object itself (using the geometry and meterial described). Creating an object automatically adds it to the scene.
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 30, -200)));
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -70)));
 
 	//3. A simple light: Creating it automatically adds it to the scene. 
 	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0, -1, 0, 0));
