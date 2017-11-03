@@ -38,14 +38,17 @@ glm::vec4 RayTracingFramework::Camera::_createLocalPrimaryRay(int x_pixel, int y
 		|| y_pixel < 0 || y_pixel >= pixelHeight)
 		return glm::vec4(0, 0, 0, 0.0f);
 	//1. Create vectors Wp and Hp:  NOTE: points topLeft, topRight, bottomLeft and bottomRight are equivalent to points A,B,C,D in the slides
-	//glm::vec4 Wp = ...;
-	//glm::vec4 Hp = ...;
+	glm::vec4 Wp = (1.0f / pixelWidth) * (topRight - topLeft);
+	glm::vec4 Hp = (1.0f / pixelHeight) * (bottomLeft - topLeft);
 
 	//2. Compute position of pixel P(x_pixel, y_pixel)
-	//glm::vec4 P = ...;
+	glm::vec4 P = topLeft + (0.5f + x_pixel) * Wp + (0.5f + y_pixel) * Hp;
+
+	//Normalized O->P
+	glm::vec4 OP = glm::normalize(P - glm::vec4(0, 0, 1, 0));
 
 	//3. Return direction vector OP. Normalize before returning (glm::normalize(<your vector>)) 
-	return glm::vec4(0,0,1,0);			//This is a place-holder, replace with your normalized vector.
+	return OP;			
 
 
 }

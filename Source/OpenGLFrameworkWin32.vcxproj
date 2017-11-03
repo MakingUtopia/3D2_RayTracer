@@ -140,6 +140,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="RayTracingFramework\GeometricPrimitives\IGeometry.cpp" />
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\ISphere.cpp" />
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\ITriangle.cpp" />
     <ClCompile Include="RayTracingFramework\GeometricPrimitives\Plane.cpp" />
     <ClCompile Include="RayTracingFramework\Light\ILight.cpp" />
     <ClCompile Include="RayTracingFramework\ShadingModels\IShadingModel.cpp" />
@@ -149,6 +151,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RayTracingFramework\GeometricPrimitives\IGeometry.h" />
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\ISphere.h" />
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\ITriangle.h" />
     <ClInclude Include="RayTracingFramework\GeometricPrimitives\Plane.h" />
     <ClInclude Include="RayTracingFramework\Light\DirectionalLight.h" />
     <ClInclude Include="RayTracingFramework\Light\ILight.h" />
