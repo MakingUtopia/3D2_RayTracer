@@ -10,7 +10,7 @@ RayTracingFramework::ISphere::ISphere(float radius):radius(radius)
 bool RayTracingFramework::ISphere::testLocalCollision(RayTracingFramework::Ray& ray){
 	//0. Transform origin and direction coordinates to local coordinates:
 	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates()*ray.origin_InWorldCoords;
-	glm::vec4 direction_local = owner->getFromWorldToObjectCoordinates()*ray.direction_InWorldCoords;
+	glm::vec4 direction_local = ray.direction_InWorldCoords;
 	//1. Compute intersection with plane (compute collision point and normal). 
 	glm::vec4 collision_Point1, collision_Normal1;
 	float t1;
@@ -49,19 +49,25 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 	, float &t1, glm::vec4& collision_Point1, glm::vec4& collision_Normal1
 	, float &t2, glm::vec4& collision_Point2, glm::vec4& collision_Normal2) {
 
+	//Direction of ray.
+	glm::vec3 v = direction_local;
+
+	//Origin of ray.
+	glm::vec3 P0 = origin_local;
+
 	//Origin of sphere.
-	glm::vec4 O = glm::vec4(0, 0, 0, 1);
+	glm::vec3 O = glm::vec4(0, 0, 0, 1);
 
 	//Sphere origin to Ray origin.
-	glm::vec4 OP0 = origin_local - O;
+	glm::vec3 OP0 = P0 - O;
 
 	//Calculate quadratic coefficients.
-	float a = glm::dot(direction_local, direction_local);
-	float b = 2.0f * glm::dot(direction_local, OP0);
+	float a = glm::dot(v, v);
+	float b = 2.0f * glm::dot(v, OP0);
 	float c = glm::dot(OP0, OP0) - radius * radius;
 
 	//Calculate discriminant.
-	float discriminant = b*b - 4.0f * a * c;
+	float discriminant = glm::dot(b, b) - 4.0f * glm::dot(a, c);
 	//Return t = infinite (no collision) if discriminant < 0.
 	//Negative discriminant means imaginary roots.
 	//Which tells us there's no intersection.
@@ -70,14 +76,12 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 
 	//Find first root.
 	t1 = (-1.0f * b + glm::sqrt(discriminant)) / (2.0f * a);
-
 	//Use root to calculate first collision point.
-	collision_Point1 = origin_local + direction_local * t1;
-
+	glm::vec3 Q1 = P0 + v * t1;
+	collision_Point1 = glm::vec4(Q1, 1);
 	//Use collision points to work out first normal.
-	glm::vec4 OQ_1 = collision_Point1 - O;
-	float OQ_mag_1 = glm::length(OQ_1);
-	collision_Normal1 = OQ_1 / OQ_mag_1;
+	glm::vec3 N1 = glm::normalize(Q1 - O);
+	collision_Normal1 = glm::vec4(N1, 1);
 	
 	//A discriminant of exactly zero means there's one point of intersection,
 	//so we exit here.
@@ -86,10 +90,10 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 
 	//Otherwise calculate second root, collision point & normal.
 	t2 = (-1.0f * b - glm::sqrt(discriminant)) / (2.0f * a);
-	collision_Point2 = origin_local + direction_local * t2;
-	glm::vec4 OQ_2 = collision_Point2 - O;
-	float OQ_mag_2 = glm::length(OQ_2);
-	collision_Normal2 = OQ_2 / OQ_mag_2;
+	glm::vec3 Q2 = P0 + v * t2;
+	collision_Point2 = glm::vec4(Q2, 1);
+	glm::vec3 N2 = glm::normalize(Q2 - O);
+	collision_Normal2 = glm::vec4(N2, 1);
 
 	//>0 means 2 points of intersection.
 	return 2;
