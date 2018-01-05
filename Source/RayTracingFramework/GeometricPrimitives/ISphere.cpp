@@ -9,8 +9,8 @@ RayTracingFramework::ISphere::ISphere(float radius):radius(radius)
 
 bool RayTracingFramework::ISphere::testLocalCollision(RayTracingFramework::Ray& ray){
 	//0. Transform origin and direction coordinates to local coordinates:
-	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates()*ray.origin_InWorldCoords;
-	glm::vec4 direction_local = ray.direction_InWorldCoords;
+	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates() * ray.origin_InWorldCoords;
+	glm::vec4 direction_local = owner->getFromWorldToObjectCoordinates() * ray.direction_InWorldCoords;
 	//1. Compute intersection with plane (compute collision point and normal). 
 	glm::vec4 collision_Point1, collision_Normal1;
 	float t1;
@@ -50,7 +50,7 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 	, float &t2, glm::vec4& collision_Point2, glm::vec4& collision_Normal2) {
 
 	//Direction of ray.
-	glm::vec3 v = direction_local;
+	glm::vec3 v = glm::normalize(direction_local);
 
 	//Origin of ray.
 	glm::vec3 P0 = origin_local;

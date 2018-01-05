@@ -13,10 +13,12 @@ RayTracingFramework::Plane::Plane(glm::vec4 P0, glm::vec4 N)
 	;
 }
 
+//Implementation of Test Local Collision.
+//Called by parent node via Test Collision during ray tracing collision check.
 bool RayTracingFramework::Plane::testLocalCollision(RayTracingFramework::Ray& ray){
-	//0. Transform origin and direction coordinates to local coordinates (Ray is described in World coordinates):
-	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates()*ray.origin_InWorldCoords;
-	glm::vec4 direction_local = owner->getFromWorldToObjectCoordinates()*ray.direction_InWorldCoords;
+	//Transform origin and direction coordinates to local coordinates (Ray is described in World coordinates):
+	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates() * ray.origin_InWorldCoords;
+	glm::vec4 direction_local = owner->getFromWorldToObjectCoordinates() * ray.direction_InWorldCoords;
 	//1. Compute intersection with plane (compute collision point and normal). 
 	glm::vec4 collision_Point, collision_Normal;
 	float t;

@@ -7,87 +7,124 @@
 #include "RayTracingFramework\GeometricPrimitives\Plane.h"
 #include "RayTracingFramework\GeometricPrimitives\ISphere.h"
 //Add your new geometries here as you implement them.
+//
+
 #include "RayTracingFramework\Material.h"
 #include "RayTracingFramework\Light\ILight.h"
 #include "RayTracingFramework\Light\DirectionalLight.h"
 //Add your new types of lights here.
+//
 
 using namespace cimg_library;
 
-RayTracingFramework::IScene& createScene();				//Function declaration (it's implementation can be found after the main method)
+//Create scene declaration.
+RayTracingFramework::IScene& createScene();				
 
+/*
+ * MAIN
+ * Run entire program:
+ * - Create image.
+ * - Create scene.
+ * - Define camera.
+ * - Perform raytracing.
+ * - Save image & display.
+ */
 int main(int arg, char **argv)
 {
-	//0. Create output frame (600x600 pixels) 
+	//Create image: params -> (width, height, bytes per colour channel, number of colour channels)
 	int imageWidth = 600, imageHeight = 600;
-	//0.We create an image of the specified size. The image uses 1 byte per channel (0..255), and three chanels per pixel. That describes a conventional RGB image.
 	CImg<unsigned char> img = CImg<unsigned char>(imageWidth, imageHeight, 1, 3);
-	img.fill((const unsigned char)128);//The image is filled up with (128,128,128) values-> medium grey
-	CImgDisplay disp(img, "Ray tracing output", false);//1. We create a window to display our image. First parameter defines the size of the window (size of our image). The other parameters describe the title and no use of full screen (false).
-
-													   //1. Define scene
+	//Fill with grey.
+	img.fill((const unsigned char)128);
+	//Display image in window.
+	CImgDisplay disp(img, "Ray tracing output", false);
+	
+	//Create scene.
 	RayTracingFramework::IScene& scene = createScene();
 
-	//2. Define camera
-	RayTracingFramework::Camera cam(scene, imageWidth, imageHeight, 1, -1, -1, 1, -1, -1000);								//create camera using fields top, bottom, left, right, near and far
-																											//3. Raytracing loop. 
+	//Define Camera.
+	//create camera using fields top, bottom, left, right, near and far
+	RayTracingFramework::Camera cam(scene, imageWidth, imageHeight, 1, -1, -1, 1, 1, 1000);								
+	
+	//Perform raytracing.
 	for (int r = 0; r < imageHeight; r++) {
 		for (int c = 0; c < imageWidth; c++) {
-			//2.1. Create one ray per pixel
+			//Create a single ray per pixel.
 			RayTracingFramework::Ray ray = cam.createPrimaryRay(c, r);
-			//2.2. Test collisions
-			RayTracingFramework::ISceneManager::instance().getRootNode().testCollision(ray, glm::mat4(1.0f));
-			//2.3. Look for closest collision and compute shading
-			RayTracingFramework::Colour shadedColour;
-			while (ray.getClosestIntersection().t_distance < 0)ray.discardClosestIntersection(); //Intersections behind the camera... let's ignore them
-			if (ray.getClosestIntersection().t_distance == FLT_MAX)
-				continue; //There have been no collisions.
-						  //2.4. There is a positive collision, and not at infinite-> Cool, we have something to paint!!
-						  //Shade using that list of intersections and the material.
-			RayTracingFramework::IScene& scene = (RayTracingFramework::IScene&)RayTracingFramework::ISceneManager::instance();
-			shadedColour = scene.getShadingModel().computeShading(ray, scene, 2);
 
-			//2.4. Apply colour to pixel.
+			//Test collisions.
+			RayTracingFramework::ISceneManager::instance().getRootNode().testCollision(ray, glm::mat4(1.0f));
+			
+			//Check there are any valid collisions.
+			//Discard collisions behind camera.
+			while (ray.getClosestIntersection().t_distance < 0) ray.discardClosestIntersection();
+			//If there are none closer than the max distance.
+			if (ray.getClosestIntersection().t_distance == FLT_MAX)
+				continue;
+
+			//Get scene, & compute shaded colour for this pixel. 
+			RayTracingFramework::IScene& scene = (RayTracingFramework::IScene&)RayTracingFramework::ISceneManager::instance();
+			RayTracingFramework::Colour shadedColour = scene.getShadingModel().computeShading(ray, scene, 2);
+
+			//Assign the computed colour to the pixel in the output image.
 			img(c, r, 0) = (unsigned char)((shadedColour.r <= 1 ? shadedColour.r : 1) * 255);// (r % 256);
 			img(c, r, 1) = (unsigned char)((shadedColour.g <= 1 ? shadedColour.g : 1) * 255);
 			img(c, r, 2) = (unsigned char)((shadedColour.b <= 1 ? shadedColour.b : 1) * 255);
 		}
+		//Update display each time row is rendered.
 		disp.display(img);
 	}
+	
+	//Save image to file and display in window for 30 seconds.
 	img.save("rayTracingResult.bmp");
-	//Done! Let's enjoy our nice little picture...
 	while (!disp.is_closed())
 		disp.display(img).wait(30);
-
 
 	return 0;
 }
 
+/* 
+ * CREATE SCENE
+ * - Gets/creates scene instance.
+ * - Creates geometries & materials.
+ * - Makes virtual objects using geometries & materials.
+ * - Applies transformations to virtual objects.
+ * - Creates lights.
+ */
 RayTracingFramework::IScene& createScene() {
-	//0. Get access to the scene (automatically created the first time we call ISceneManager::instance())
+	//Get scene instance, or create one if it doesn't exist.
 	RayTracingFramework::IScene& scene = RayTracingFramework::ISceneManager::instance();
-	//1. Fill in the scene with some geometry:
+	
+	//Create geometries, materials & virtual objects...
+	//(Upon creation, virtual objects are automatically added to the scene.)
 
-	//1.1. A horizontal plane: 
-	//  A) Its geometry: A plane described using the position of its origin, as point (0,-30,0,1); and its normal vector (0,1,0,0).
+	//Horizontal plane
+	//Geometry
 	RayTracingFramework::IGeometry*g = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, -30, 0, 1), glm::vec4(0, 1, 0, 0));
-	//  B) Its material:
+	//Material
 	RayTracingFramework::Material*m = new RayTracingFramework::Material;
-	m->K_a = 0.15f; m->K_d = 0.85f; m->diffuseColour = RayTracingFramework::Colour(0.65f, 0, 1);			//Material defines other properties (not used yet). 
-																											//  C) The object itself (using the geometry and meterial described). Creating an object automatically adds it to the scene.
+	m->K_a = 0.15f; 
+	m->K_d = 0.85f;
+	m->diffuseColour = RayTracingFramework::Colour(0.65f, 0, 1);
+	//Virtual Object
 	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
 
-	//2.1. A Sphere: 
-	//  A) Its geometry: A plane described using the position of its origin, as point (0,-30,0,1); and its normal vector (0,1,0,0).
+	//Sphere
+	//Geometry
 	RayTracingFramework::IGeometry*g2 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(20);
-	//  B) Its material:
+	//Material
 	RayTracingFramework::Material*m2 = new RayTracingFramework::Material;
-	m2->K_a = 0.15f; m2->K_d = 0.85f; m2->diffuseColour = RayTracingFramework::Colour(0.65f, 0.70f, 0.2);			//Material defines other properties (not used yet). 
-																													//  C) The object itself (using the geometry and meterial described). Creating an object automatically adds it to the scene.
+	m2->K_a = 0.15f;	//ambient coefficient
+	m2->K_d = 0.85f;	//diffuse coefficient
+	m2->diffuseColour = RayTracingFramework::Colour(0.65f, 0.70f, 0.2);			
+	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -70)));
+	//Apply transformation
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 70)));
 
-	//3. A simple light: Creating it automatically adds it to the scene. 
+	//Create Lights
+	
+	//Directional Light
 	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0, -1, 0, 0));
 
 	return scene;
