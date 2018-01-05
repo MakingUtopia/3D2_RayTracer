@@ -22,7 +22,7 @@
     <ProjectGuid>{C88966D3-53BB-4255-9C3B-8D997CF9EF16}</ProjectGuid>
     <RootNamespace>OpenGLFrameworkWin32</RootNamespace>
     <ProjectName>rayTracing</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -10,8 +10,8 @@ RayTracingFramework::ISphere::ISphere(float radius):radius(radius)
 bool RayTracingFramework::ISphere::testLocalCollision(RayTracingFramework::Ray& ray){
 	//0. Transform origin and direction coordinates to local coordinates:
 	glm::vec4 origin_local = owner->getFromWorldToObjectCoordinates() * ray.origin_InWorldCoords;
-	glm::vec4 direction_local = owner->getFromWorldToObjectCoordinates() * ray.direction_InWorldCoords;
-	//1. Compute intersection with plane (compute collision point and normal). 
+	glm::vec4 direction_local = ray.direction_InWorldCoords;
+	//1. Compute intersection with sphere (compute collision point and normal). 
 	glm::vec4 collision_Point1, collision_Normal1;
 	float t1;
 	glm::vec4 collision_Point2, collision_Normal2;
@@ -81,7 +81,8 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 	collision_Point1 = glm::vec4(Q1, 1);
 	//Use collision points to work out first normal.
 	glm::vec3 N1 = glm::normalize(Q1 - O);
-	collision_Normal1 = glm::vec4(N1, 1);
+	collision_Normal1 = glm::vec4(N1, 0.0f);
+	//collision_Normal1 = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	
 	//A discriminant of exactly zero means there's one point of intersection,
 	//so we exit here.
@@ -93,7 +94,11 @@ int RayTracingFramework::ISphere::testRaySphereCollision(glm::vec4 origin_local,
 	glm::vec3 Q2 = P0 + v * t2;
 	collision_Point2 = glm::vec4(Q2, 1);
 	glm::vec3 N2 = glm::normalize(Q2 - O);
-	collision_Normal2 = glm::vec4(N2, 1);
+	collision_Normal2 = glm::vec4(N2, 0.0f);
+	//collision_Normal2 = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
+	if (direction_local.x > -0.05 && direction_local.x < 0.05 && direction_local.y > -0.05 && direction_local.y < 0.05)
+		int debug = 1;
 
 	//>0 means 2 points of intersection.
 	return 2;

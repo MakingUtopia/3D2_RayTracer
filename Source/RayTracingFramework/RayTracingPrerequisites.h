@@ -2,6 +2,8 @@
 #define _PREREQUISITES_RAYTRACINGFRAMEWORK
 #include <external\CImg\CImg.h>
 #include <external\glm\glm.hpp>
+#include <external\glm\ext.hpp>
+#include <external\glm\matrix.hpp>
 #include <external\glm\gtc\matrix_transform.hpp>
 #include <map>
 

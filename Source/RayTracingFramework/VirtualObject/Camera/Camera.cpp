@@ -43,13 +43,11 @@ glm::vec4 RayTracingFramework::Camera::_createLocalPrimaryRay(int x_pixel, int y
 	float nearHeight = bottomLeft.y - topLeft.y;
 	float proportionWidth = (float)x_pixel / (float)pixelWidth;
 	float proportionHeight = (float)y_pixel / (float)pixelHeight;
-	glm::vec4 P = topLeft + glm::vec4(nearWidth * proportionWidth, nearHeight * proportionHeight, 0, 0);
+	glm::vec3 P = glm::vec3(topLeft) + glm::vec3(nearWidth * proportionWidth, nearHeight * proportionHeight, 0);
 
 	//O->P
-	glm::vec4 OP = glm::normalize(P);
+	glm::vec3 OP = glm::normalize(P);
 
 	//3. Return direction vector OP. Normalize before returning (glm::normalize(<your vector>)) 
-	return OP;
-
-
+	return glm::vec4(OP, 1.0f);
 }

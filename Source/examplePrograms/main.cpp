@@ -6,6 +6,7 @@
 #include "RayTracingFramework\GeometricPrimitives\IGeometry.h"
 #include "RayTracingFramework\GeometricPrimitives\Plane.h"
 #include "RayTracingFramework\GeometricPrimitives\ISphere.h"
+#include "RayTracingFramework\GeometricPrimitives\ITriangle.h"
 //Add your new geometries here as you implement them.
 //
 
@@ -43,7 +44,7 @@ int main(int arg, char **argv)
 	RayTracingFramework::IScene& scene = createScene();
 
 	//Define Camera.
-	//create camera using fields top, bottom, left, right, near and far
+	//Create camera using fields top, bottom, left, right, near and far
 	RayTracingFramework::Camera cam(scene, imageWidth, imageHeight, 1, -1, -1, 1, 1, 1000);								
 	
 	//Perform raytracing.
@@ -116,16 +117,33 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::Material*m2 = new RayTracingFramework::Material;
 	m2->K_a = 0.15f;	//ambient coefficient
 	m2->K_d = 0.85f;	//diffuse coefficient
-	m2->diffuseColour = RayTracingFramework::Colour(0.65f, 0.70f, 0.2);			
+	m2->diffuseColour = RayTracingFramework::Colour(0.05f, 0.70f, 0.2);			
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
 	//Apply transformation
 	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 70)));
 
+	//Triangle
+	//Geometry
+	RayTracingFramework::IGeometry*g3 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ITriangle(
+		glm::vec4(-10.0f, -10.0f, 0.0f, 0.0f),
+		glm::vec4(0.0f, 10.0f, 0.0f, 0.0f),
+		glm::vec4(10.0f, -10.0f, 0.0f, 0.0f)
+	);
+	//Material
+	RayTracingFramework::Material*m3 = new RayTracingFramework::Material;
+	m3->K_a = 0.15f;	//ambient coefficient
+	m3->K_d = 0.85f;	//diffuse coefficient
+	m3->diffuseColour = RayTracingFramework::Colour(0.0f, 0.00f, 0.80f);
+	//Virtual Object
+	RayTracingFramework::IVirtualObject* triangle = new RayTracingFramework::IVirtualObject(g3, m3, scene);
+	//Apply transformation
+	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-15, 0, 40)));
+
 	//Create Lights
-	
+
 	//Directional Light
-	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0, -1, 0, 0));
+	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0.5, -0.5, 0.5, 0));
 
 	return scene;
 }
