@@ -9,8 +9,23 @@ RayTracingFramework::Plane::Plane(glm::vec4 P0, glm::vec4 N)
 	, B(N.y)
 	, C(N.z)
 	, D(A*P0.x + B*P0.y +C*P0.z)	//Check slides, we compute D, so that P0 belongs to the plane.
+	, mostRecentCollisionPoint (glm::vec3(-1.0f, -1.0f, -1.0f))
+	, collisionDetected (false)
+	, rayLength (-1.0f)
 {
 	;
+}
+
+glm::vec3 RayTracingFramework::Plane::getMostRecentCollisionPoint() {
+	return mostRecentCollisionPoint;
+}
+
+bool RayTracingFramework::Plane::didCollisionHappen() {
+	return collisionDetected;
+}
+
+float RayTracingFramework::Plane::getRayLength() {
+	return rayLength;
 }
 
 //Implementation of Test Local Collision.
@@ -36,7 +51,6 @@ bool RayTracingFramework::Plane::testLocalCollision(RayTracingFramework::Ray& ra
 		return true;
 	}
 	return false;
-	
 }
 
 bool RayTracingFramework::Plane::testRayPlaneCollision(glm::vec4 origin, glm::vec4 direction
@@ -49,6 +63,8 @@ bool RayTracingFramework::Plane::testRayPlaneCollision(glm::vec4 origin, glm::ve
 		t = (D - glm::dot(N, origin)) / (glm::dot(N, direction));
 		col_P = origin + t*direction;	//According to parametric equation: P(t)=P0 + t* direction
 		col_N = this->N;				//Normal of the plane
+		collisionDetected = true;
+		mostRecentCollisionPoint = glm::vec3(col_P.x, col_P.y, col_P.z);
 		return true;
 	}	
 }

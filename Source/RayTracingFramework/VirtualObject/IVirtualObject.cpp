@@ -38,9 +38,9 @@ void RayTracingFramework::IVirtualObject::addChild(RayTracingFramework::IVirtual
 }
 
 void RayTracingFramework::IVirtualObject::testCollision(RayTracingFramework::Ray& ray, glm::mat4 fromWorldToParentCoordinates ) {
-	//0. #Test the collisions with the local primitive 
-	if(geometry)geometry->testLocalCollision(ray);
-	//1. Propagate message through all other children.
+	//Test the collisions with the local primitive 
+	if(geometry) geometry->testLocalCollision(ray);
+	//Propagate message through all other children.
 	for (std::map<unsigned int, IVirtualObject*>::iterator it = children.begin(); it != children.end(); it++)
 		it->second->testCollision(ray, this->_fromParentToLocal*fromWorldToParentCoordinates);
 }

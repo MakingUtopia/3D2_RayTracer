@@ -1,8 +1,15 @@
 #ifndef _SHADINGMODEL_RAYTRACINGFRAMEWORK
 #define _SHADINGMODEL_RAYTRACINGFRAMEWORK
 #include <RayTracingFramework\RayTracingPrerequisites.h>
+#include "RayTracingFramework\Ray.h"
+#include "RayTracingFramework\Light\ILight.h"
+#include "RayTracingFramework\Material.h"
+#include "RayTracingFramework\GeometricPrimitives\IGeometry.h"
+#include "RayTracingFramework\VirtualObject\ISceneManager.h"
 
-
+/*
+ * Currently, shading model only accounts for 1 light.
+ */
 namespace RayTracingFramework{
 	class IShadingModel
 	{
@@ -22,6 +29,12 @@ namespace RayTracingFramework{
 
 		*/
 		virtual RayTracingFramework::Colour computeShading(Ray& ray, RayTracingFramework::IScene& scene, int recursiveLevel = 0);
+	private:
+		bool checkForShadow(Ray::Intersection originalIntersection, ILight* lightSource);
+		Colour computeDiffuse(Colour inputColour, ILight* lightSource, Material& material,
+			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
+		Colour computeAmbientDiffuseSpecular(RayTracingFramework::Ray::Intersection intersection, 
+			RayTracingFramework::Material& material, ILight* lightSource);
 	};
 };
 #endif

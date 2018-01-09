@@ -7,6 +7,7 @@
 #include "RayTracingFramework\GeometricPrimitives\Plane.h"
 #include "RayTracingFramework\GeometricPrimitives\ISphere.h"
 #include "RayTracingFramework\GeometricPrimitives\ITriangle.h"
+#include "RayTracingFramework\GeometricPrimitives\Box.h"
 //Add your new geometries here as you implement them.
 //
 
@@ -62,6 +63,8 @@ int main(int arg, char **argv)
 			//If there are none closer than the max distance.
 			if (ray.getClosestIntersection().t_distance == FLT_MAX)
 				continue;
+
+			//Beyond this point means there is a collision.
 
 			//Get scene, & compute shaded colour for this pixel. 
 			RayTracingFramework::IScene& scene = (RayTracingFramework::IScene&)RayTracingFramework::ISceneManager::instance();
@@ -139,6 +142,23 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::IVirtualObject* triangle = new RayTracingFramework::IVirtualObject(g3, m3, scene);
 	//Apply transformation
 	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-15, 0, 40)));
+
+
+	//Box
+	//Geometry
+	RayTracingFramework::IGeometry*g4 = (RayTracingFramework::IGeometry*)new RayTracingFramework::Box(
+		glm::vec4(-10.0f, 10.0f, -10.0f, 0.0f),
+		glm::vec4(10.0f, -10.0f, 10.0f, 0.0f)
+	);
+	//Material
+	RayTracingFramework::Material*m4 = new RayTracingFramework::Material;
+	m4->K_a = 0.15f;	//ambient coefficient
+	m4->K_d = 0.85f;	//diffuse coefficient
+	m4->diffuseColour = RayTracingFramework::Colour(0.8f, 0.0f, 0.0f);
+	//Virtual Object
+	RayTracingFramework::IVirtualObject* box = new RayTracingFramework::IVirtualObject(g4, m4, scene);
+	//Apply transformation
+	box->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(30.0f, -5.0f, 100.0f)));
 
 	//Create Lights
 

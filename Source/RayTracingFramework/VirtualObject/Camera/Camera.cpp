@@ -29,7 +29,7 @@ RayTracingFramework::Ray RayTracingFramework::Camera::createPrimaryRay(int x_pix
 	glm::vec4 origin_world=this->getFromObjectToWorldCoordinates() * origin_local;
 	glm::vec4 direction_world=this->getFromObjectToWorldCoordinates() * direction_local;
 	//3. Return ray in world coordinates.
-	return  RayTracingFramework::Ray(origin_world,direction_world);
+	return  RayTracingFramework::Ray(origin_world, direction_world);
 }
 
 glm::vec4 RayTracingFramework::Camera::_createLocalPrimaryRay(int x_pixel, int y_pixel){

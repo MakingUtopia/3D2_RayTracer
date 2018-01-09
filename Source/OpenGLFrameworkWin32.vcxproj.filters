@@ -54,6 +54,12 @@
     <ClCompile Include="RayTracingFramework\GeometricPrimitives\ITriangle.cpp">
       <Filter>RayTracingFramework\GeometricPrimitives</Filter>
     </ClCompile>
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\Box.cpp">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingFramework\GeometricPrimitives\Rectangle.cpp">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RayTracingFramework\VirtualObject\IVirtualObject.h">
@@ -93,6 +99,12 @@
       <Filter>RayTracingFramework\GeometricPrimitives</Filter>
     </ClInclude>
     <ClInclude Include="RayTracingFramework\GeometricPrimitives\ITriangle.h">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\Square.h">
+      <Filter>RayTracingFramework\GeometricPrimitives</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracingFramework\GeometricPrimitives\Box.h">
       <Filter>RayTracingFramework\GeometricPrimitives</Filter>
     </ClInclude>
   </ItemGroup>

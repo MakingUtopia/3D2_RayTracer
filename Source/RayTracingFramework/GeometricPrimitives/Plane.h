@@ -7,11 +7,18 @@ namespace RayTracingFramework{
 
 	class Plane : public IGeometry
 	{
+		friend class Box;
 		glm::vec4 P0, N;		//Origin point and Normal vector describing the plane.
 		float A, B, C, D;		//Variables from the implicit equations. Ax + By +Cz +D=0
+		glm::vec3 mostRecentCollisionPoint;
+		bool collisionDetected;
+		float rayLength;	//Distance ray travelled until collision.
 	public:
 		Plane(glm::vec4 P0, glm::vec4 N);
 		virtual bool testLocalCollision(RayTracingFramework::Ray& ray);
+		glm::vec3 getMostRecentCollisionPoint();
+		bool didCollisionHappen();
+		float getRayLength();
 	private: 
 		/**
 			Computes a collision of a ray (in coords local to the plane) with the plane
@@ -21,7 +28,7 @@ namespace RayTracingFramework{
 			@param col_N (Output parameter): Normal of the plane at the intersection point (... all points on a plane share the same normal vector).
 
 		*/
-		bool testRayPlaneCollision(glm::vec4 origin, glm::vec4 direction
+		virtual bool testRayPlaneCollision(glm::vec4 origin, glm::vec4 direction
 					, float& t, glm::vec4& col_P, glm::vec4& col_N);
 	};
 };

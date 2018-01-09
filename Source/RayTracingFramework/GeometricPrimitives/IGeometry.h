@@ -4,8 +4,6 @@
 #include <RayTracingFramework\VirtualObject\IVirtualObject.h>
 
 namespace RayTracingFramework{
-
-
 	/*
 		Component (part of IVirtualObject), describing the geometry/shape of the 3D object.
 		It allows us to detect colisions of a ray with the geometry, described as intersections.
