@@ -12,7 +12,7 @@ namespace RayTracingFramework {
 		Box(glm::vec4 pointA, glm::vec4 pointB);
 		virtual bool testLocalCollision(RayTracingFramework::Ray& ray);
 	private:
-		bool checkConstraint(glm::vec3 collisionPoint);
+		bool checkConstraint(glm::vec3 collisionPoint, Plane& faceRef);
 		bool testRayBoxCollision(glm::vec4 origin, glm::vec4 direction, float& t, glm::vec4& col_P, glm::vec4& col_N);
 	};
 }

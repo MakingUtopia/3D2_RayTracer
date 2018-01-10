@@ -9,16 +9,10 @@ namespace RayTracingFramework{
 	{
 		friend class Box;
 		glm::vec4 P0, N;		//Origin point and Normal vector describing the plane.
-		float A, B, C, D;		//Variables from the implicit equations. Ax + By +Cz +D=0
-		glm::vec3 mostRecentCollisionPoint;
-		bool collisionDetected;
-		float rayLength;	//Distance ray travelled until collision.
+		float A, B, C, D;		//Variables from the implicit equations. Ax + By +Cz +D=0=
 	public:
 		Plane(glm::vec4 P0, glm::vec4 N);
 		virtual bool testLocalCollision(RayTracingFramework::Ray& ray);
-		glm::vec3 getMostRecentCollisionPoint();
-		bool didCollisionHappen();
-		float getRayLength();
 	private: 
 		/**
 			Computes a collision of a ray (in coords local to the plane) with the plane

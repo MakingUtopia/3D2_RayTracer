@@ -7,7 +7,7 @@
 RayTracingFramework::Box::Box(glm::vec4 pointA, glm::vec4 pointB)
 	: A (pointA)
 	, B (pointB)
-	, front (Plane(A, glm::vec4(0.0f, 0.0f, -1.0f, 0.0f)))
+	, front (Plane(A, glm::vec4(0.0f, 0.0f, 1.0f, 0.0f)))
 	, back (Plane(B, glm::vec4(0.0f, 0.0f, 1.0f, 0.0f)))
 	, left (Plane(A, glm::vec4(-1.0f, 0.0f, 0.0f, 0.0f)))
 	, right (Plane(B, glm::vec4(1.0f, 0.0f, 0.0f, 0.0f)))
@@ -40,19 +40,27 @@ bool RayTracingFramework::Box::testLocalCollision(RayTracingFramework::Ray& ray)
 }
 
 //Check if collision with one of the box's planes actually exists within the box's spatial constraints.
-bool RayTracingFramework::Box::checkConstraint(glm::vec3 collisionPoint) {
-	if (collisionPoint.x < A.x)
-		return false;
-	if (collisionPoint.x > B.x)
-		return false;
-	if (collisionPoint.y < B.y)
-		return false;
-	if (collisionPoint.y > A.y)
-		return false;
-	if (collisionPoint.z < A.z)
-		return false;
-	if (collisionPoint.z > B.z)
-		return false;
+bool RayTracingFramework::Box::checkConstraint(glm::vec3 collisionPoint, Plane& faceRef) {
+	//Don't check constraint on the same axis that the plane's normal faces.
+	//(Otherwise part's won't render due to rounding errors.)
+	if (faceRef.N.x == 0) { 
+		if (collisionPoint.x < A.x)
+			return false;
+		if (collisionPoint.x > B.x)
+			return false;
+	}
+	if (faceRef.N.y == 0) {
+		if (collisionPoint.y < B.y)
+			return false;
+		if (collisionPoint.y > A.y)
+			return false;
+	}
+	if (faceRef.N.z == 0) {
+		if (collisionPoint.z < A.z)
+			return false;
+		if (collisionPoint.z > B.z)
+			return false;
+	}
 	return true;
 }
 
@@ -80,7 +88,7 @@ bool RayTracingFramework::Box::testRayBoxCollision(glm::vec4 origin, glm::vec4 d
 	//Loop through faces, testing and validating collisions.
 	for (int i = 0; i < 6; i++) {
 		if (faceRef[i].testRayPlaneCollision(origin, direction, rayLengths[i], collisionPoints[i], collisionNormals[i])
-			&& checkConstraint(collisionPoints[i])
+			&& checkConstraint(collisionPoints[i], faceRef[i])
 			&& (shortestRayIndex == -1 || rayLengths[i] < rayLengths[shortestRayIndex]))
 			shortestRayIndex = i;
 	}
@@ -90,7 +98,7 @@ bool RayTracingFramework::Box::testRayBoxCollision(glm::vec4 origin, glm::vec4 d
 		//Send collision data of shortest ray back to framework.
 		t = rayLengths[shortestRayIndex];
 		col_P = collisionPoints[shortestRayIndex];
-		col_N = collisionPoints[shortestRayIndex];
+		col_N = collisionNormals[shortestRayIndex];
 		return true;
 	}
 

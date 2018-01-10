@@ -30,11 +30,9 @@ namespace RayTracingFramework{
 		*/
 		virtual RayTracingFramework::Colour computeShading(Ray& ray, RayTracingFramework::IScene& scene, int recursiveLevel = 0);
 	private:
-		bool checkForShadow(Ray::Intersection originalIntersection, ILight* lightSource);
+		bool checkForShadow(glm::vec4 collisionPoint, ILight* lightSource);
 		Colour computeDiffuse(Colour inputColour, ILight* lightSource, Material& material,
 			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
-		Colour computeAmbientDiffuseSpecular(RayTracingFramework::Ray::Intersection intersection, 
-			RayTracingFramework::Material& material, ILight* lightSource);
 	};
 };
 #endif

@@ -9,23 +9,8 @@ RayTracingFramework::Plane::Plane(glm::vec4 P0, glm::vec4 N)
 	, B(N.y)
 	, C(N.z)
 	, D(A*P0.x + B*P0.y +C*P0.z)	//Check slides, we compute D, so that P0 belongs to the plane.
-	, mostRecentCollisionPoint (glm::vec3(-1.0f, -1.0f, -1.0f))
-	, collisionDetected (false)
-	, rayLength (-1.0f)
 {
 	;
-}
-
-glm::vec3 RayTracingFramework::Plane::getMostRecentCollisionPoint() {
-	return mostRecentCollisionPoint;
-}
-
-bool RayTracingFramework::Plane::didCollisionHappen() {
-	return collisionDetected;
-}
-
-float RayTracingFramework::Plane::getRayLength() {
-	return rayLength;
 }
 
 //Implementation of Test Local Collision.
@@ -56,15 +41,16 @@ bool RayTracingFramework::Plane::testLocalCollision(RayTracingFramework::Ray& ra
 bool RayTracingFramework::Plane::testRayPlaneCollision(glm::vec4 origin, glm::vec4 direction
 	, float& t, glm::vec4& col_P, glm::vec4& col_N)
 {
-	if ((glm::dot(N, direction)) == 0)//Plane is parallel to ray (intersection at infinity)
+	glm::vec3 normal = N;
+	glm::vec3 rayDirection = direction;
+	glm::vec3 rayOrigin = origin;
+	if ((glm::dot(normal, rayDirection)) == 0)//Plane is parallel to ray (intersection at infinity)
 		return false;				  // Intersection at infinite
 	else { 
 		//Common intersection: Compute using parametric & implicit equations (as in slides), and fill in our "Output parameters t, col_P and col_N.
-		t = (D - glm::dot(N, origin)) / (glm::dot(N, direction));
-		col_P = origin + t*direction;	//According to parametric equation: P(t)=P0 + t* direction
-		col_N = this->N;				//Normal of the plane
-		collisionDetected = true;
-		mostRecentCollisionPoint = glm::vec3(col_P.x, col_P.y, col_P.z);
+		t = (D - glm::dot(normal, rayOrigin)) / (glm::dot(normal, rayDirection));
+		col_P = glm::vec4(rayOrigin + t * rayDirection, 1.0f);	//According to parametric equation: P(t)=P0 + t* direction
+		col_N = glm::vec4(normal, 0.0f);				//Normal of the plane
 		return true;
 	}	
 }

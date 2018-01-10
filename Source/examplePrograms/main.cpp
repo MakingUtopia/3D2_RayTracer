@@ -102,17 +102,6 @@ RayTracingFramework::IScene& createScene() {
 	//Create geometries, materials & virtual objects...
 	//(Upon creation, virtual objects are automatically added to the scene.)
 
-	//Horizontal plane
-	//Geometry
-	RayTracingFramework::IGeometry*g = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, -30, 0, 1), glm::vec4(0, 1, 0, 0));
-	//Material
-	RayTracingFramework::Material*m = new RayTracingFramework::Material;
-	m->K_a = 0.15f; 
-	m->K_d = 0.85f;
-	m->diffuseColour = RayTracingFramework::Colour(0.65f, 0, 1);
-	//Virtual Object
-	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
-
 	//Sphere
 	//Geometry
 	RayTracingFramework::IGeometry*g2 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(20);
@@ -124,7 +113,7 @@ RayTracingFramework::IScene& createScene() {
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
 	//Apply transformation
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 70)));
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 50)));
 
 	//Triangle
 	//Geometry
@@ -141,14 +130,13 @@ RayTracingFramework::IScene& createScene() {
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* triangle = new RayTracingFramework::IVirtualObject(g3, m3, scene);
 	//Apply transformation
-	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-15, 0, 40)));
-
+	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-18, 0, 30)));
 
 	//Box
 	//Geometry
 	RayTracingFramework::IGeometry*g4 = (RayTracingFramework::IGeometry*)new RayTracingFramework::Box(
-		glm::vec4(-10.0f, 10.0f, -10.0f, 0.0f),
-		glm::vec4(10.0f, -10.0f, 10.0f, 0.0f)
+		glm::vec4(-10.0f, 10.0f, -10.0f, 1.0f),
+		glm::vec4(10.0f, -10.0f, 10.0f, 1.0f)
 	);
 	//Material
 	RayTracingFramework::Material*m4 = new RayTracingFramework::Material;
@@ -158,12 +146,23 @@ RayTracingFramework::IScene& createScene() {
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* box = new RayTracingFramework::IVirtualObject(g4, m4, scene);
 	//Apply transformation
-	box->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(30.0f, -5.0f, 100.0f)));
+	box->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(35.0f, -15.0f, 60.0f)));
+
+	//Horizontal plane
+	//Geometry
+	RayTracingFramework::IGeometry*g = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, -30, 0, 1), glm::vec4(0, 1, 0, 0));
+	//Material
+	RayTracingFramework::Material*m = new RayTracingFramework::Material;
+	m->K_a = 0.15f;
+	m->K_d = 0.85f;
+	m->diffuseColour = RayTracingFramework::Colour(0.65f, 0, 1);
+	//Virtual Object
+	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
 
 	//Create Lights
 
 	//Directional Light
-	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0.5, -0.5, 0.5, 0));
+	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0.4f, -0.6f, 0.5f, 0));
 
 	return scene;
 }
