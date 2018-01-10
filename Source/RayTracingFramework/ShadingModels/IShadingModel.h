@@ -29,10 +29,14 @@ namespace RayTracingFramework{
 
 		*/
 		virtual RayTracingFramework::Colour computeShading(Ray& ray, RayTracingFramework::IScene& scene, int recursiveLevel = 0);
+		int recursionLimit = 5;
 	private:
-		bool checkForShadow(glm::vec4 collisionPoint, ILight* lightSource);
+		bool checkForShadow(glm::vec4 collisionPoint, ILight* lightSource, unsigned int originalObjectId);
 		Colour computeDiffuse(Colour inputColour, ILight* lightSource, Material& material,
 			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
+		Colour computeSpecular(Colour inputColour, ILight* lightSource, Material& material, 
+			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
+		bool checkForReflection(Colour& outputColour, IScene& scene, glm::vec4 collisionPoint, glm::vec4 collisionNormal, Ray& originalRay, float reflectiveness, int recursiveLevel);
 	};
 };
 #endif

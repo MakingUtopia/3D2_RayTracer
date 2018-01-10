@@ -116,7 +116,7 @@ RayTracingFramework::IScene& createScene() {
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
 	//Apply transformation
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, -10, 75)));
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, -10, 70)));
 
 	//Triangle
 	//Geometry
