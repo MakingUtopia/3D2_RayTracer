@@ -11,6 +11,21 @@
  * Currently, shading model only accounts for 1 light.
  */
 namespace RayTracingFramework{
+	//Hold shading info together.
+	//To be passed to sub-methods utilised by computeShading method.
+	//Consists of details surrounding the ray collision.
+	struct ShadingInfo {
+		Colour& outputColour;
+		IScene& scene;
+		ILight* lightSource;
+		Material& material;
+		glm::vec4 collisionPoint;
+		glm::vec4 collisionNormal;
+		Ray& ray;
+		unsigned int originalObjectId;
+		int recursiveLevel;
+	};
+
 	class IShadingModel
 	{
 	protected:
@@ -29,14 +44,23 @@ namespace RayTracingFramework{
 
 		*/
 		virtual RayTracingFramework::Colour computeShading(Ray& ray, RayTracingFramework::IScene& scene, int recursiveLevel = 0);
-		int recursionLimit = 5;
 	private:
-		bool checkForShadow(glm::vec4 collisionPoint, ILight* lightSource, unsigned int originalObjectId);
-		Colour computeDiffuse(Colour inputColour, ILight* lightSource, Material& material,
-			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
-		Colour computeSpecular(Colour inputColour, ILight* lightSource, Material& material, 
-			glm::vec4 collisionPoint, glm::vec4 collisionNormal);
-		bool checkForReflection(Colour& outputColour, IScene& scene, glm::vec4 collisionPoint, glm::vec4 collisionNormal, Ray& originalRay, float reflectiveness, int recursiveLevel);
+
+		//Number of times the compute shading function can be recursively called before exiting.
+		const int recursionLimit = 5;
+
+		//Define background colour for global illumination.
+		const float offWhite = 200.0f / 256.0f;
+		const Colour backgroundColour = Colour(offWhite, offWhite, offWhite);
+
+		//Phong shading
+		Colour computeDiffuse(ShadingInfo shadingInfo);
+		Colour computeSpecular(ShadingInfo shadingInfo);
+
+		//Global illumination.
+		Colour getNextLayerColour(ShadingInfo shadingInfo);
+		bool checkForShadow(ShadingInfo shadingInfo);		
+		Colour checkForReflection(ShadingInfo shadingInfo);
 	};
 };
 #endif

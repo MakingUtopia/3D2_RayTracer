@@ -109,14 +109,15 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::Material*m2 = new RayTracingFramework::Material;
 	m2->K_a = 0.15f;	//ambient coefficient
 	m2->K_d = 0.85f;	//diffuse coefficient
-	m2->K_s = 0.4f;		//specular coefficient
-	m2->K_r = 0.30f;		//reflectiveness
-	m2->shininess = 9;
-	m2->diffuseColour = RayTracingFramework::Colour(0.05f, 0.70f, 0.2);			
+	m2->K_s = 0.45f;		//specular coefficient
+	m2->K_r = 0.60f;	//reflectiveness
+	m2->K_t = 0.80f;	//transparency
+	m2->shininess = 100.0f;
+	m2->diffuseColour = RayTracingFramework::Colour(0.05f, 0.70f, 0.20f);			
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
 	//Apply transformation
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, -10, 75)));
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, -10, 60)));
 
 	//Triangle
 	//Geometry
@@ -160,25 +161,16 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::Material*m = new RayTracingFramework::Material;
 	m->K_a = 0.15f;
 	m->K_d = 0.85f;
-	m->K_r = 0.85f;
+	m->K_r = 0.30f;
 	m->diffuseColour = RayTracingFramework::Colour(0.7f, 0.3f, 0.7f);
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
 
-	/*//Geometry
-	RayTracingFramework::IGeometry*g5 = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, 100, 0, 1), glm::vec4(0, 1, 0, 0));
-	//Material
-	RayTracingFramework::Material*m5 = new RayTracingFramework::Material;
-	m5->K_a = 0.40f;
-	m5->K_d = 0.60f;
-	m5->diffuseColour = RayTracingFramework::Colour(0.7f, 0.9f, 1.0f);
-	//Virtual Object
-	RayTracingFramework::IVirtualObject* skyPlane = new RayTracingFramework::IVirtualObject(g5, m5, scene);*/
 
 	//Create Lights
 
 	//Directional Light
-	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(0.4f, -0.6f, 0.5f, 0));
+	RayTracingFramework::DirectionalLight* pl = new RayTracingFramework::DirectionalLight(scene, glm::vec4(glm::normalize(glm::vec3(1.0f, -1.0f, 1.0f)), 0.0f));
 
 	return scene;
 }

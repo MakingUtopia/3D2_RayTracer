@@ -52,8 +52,9 @@ RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeShading(R
 RayTracingFramework::Colour RayTracingFramework::IShadingModel::getNextLayerColour(ShadingInfo shadingInfo) {
 	//By default, set the colour of the next layer to the background colour.
 	Colour nextLayerColour = backgroundColour;
+	glm::vec4 origin = shadingInfo.collisionPoint + 0.1f * shadingInfo.ray.direction_InWorldCoords;
 	//Create a ray that is a continuing (identical) version of the ray that collided.
-	Ray continuingRay = Ray(shadingInfo.collisionPoint, shadingInfo.ray.direction_InWorldCoords);
+	Ray continuingRay = Ray(origin, shadingInfo.ray.direction_InWorldCoords);
 	//Test for collisions with scene.
 	shadingInfo.scene.getRootNode().testCollision(continuingRay, glm::mat4(1.0f));
 	
