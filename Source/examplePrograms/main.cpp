@@ -153,7 +153,7 @@ RayTracingFramework::IScene& createScene() {
 	//Geometry
 	RayTracingFramework::IGeometry*g4 = (RayTracingFramework::IGeometry*)new RayTracingFramework::Box(
 		glm::vec4(-5.0f, 15.0f, -5.0f, 1.0f),
-		glm::vec4(5.0f, -20.0f, 5.0f, 1.0f)
+		glm::vec4(5.0f, -15.0f, 5.0f, 1.0f)
 	);
 	//Material
 	RayTracingFramework::Material*m4 = new RayTracingFramework::Material;
