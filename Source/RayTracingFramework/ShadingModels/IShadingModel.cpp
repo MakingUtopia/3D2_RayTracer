@@ -104,9 +104,9 @@ float RayTracingFramework::IShadingModel::getShadowIntensity(ShadingInfo shading
 
 RayTracingFramework::Colour RayTracingFramework::IShadingModel::checkForReflection(ShadingInfo shadingInfo) {
 	//Create reflection ray.
-	glm::vec3 lightDirection = shadingInfo.ray.direction_InWorldCoords;
+	glm::vec3 lightDirection = -shadingInfo.ray.direction_InWorldCoords;
 	glm::vec3 normal = shadingInfo.collisionNormal;
-	glm::vec3 reflectionDirection = glm::normalize(normal - lightDirection);
+	glm::vec3 reflectionDirection = glm::normalize(normal + (normal - lightDirection));
 	glm::vec3 reflectionOrigin = glm::vec3(shadingInfo.collisionPoint) + 0.1f * reflectionDirection;
 	Ray reflectionRay = Ray(glm::vec4(reflectionOrigin, 1.0f), glm::vec4(reflectionDirection, 0.0f));
 	//Test reflection ray for collisions with scene.
