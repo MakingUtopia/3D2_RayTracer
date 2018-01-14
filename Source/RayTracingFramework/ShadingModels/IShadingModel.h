@@ -24,6 +24,7 @@ namespace RayTracingFramework{
 		Ray& ray;
 		unsigned int originalObjectId;
 		int recursiveLevel;
+		float shadowIntensity;	//0.0f -> 1.0f
 	};
 
 	class IShadingModel
@@ -47,19 +48,20 @@ namespace RayTracingFramework{
 	private:
 
 		//Number of times the compute shading function can be recursively called before exiting.
-		const int recursionLimit = 5;
+		const int recursionLimit = 3;
 
 		//Define background colour for global illumination.
-		const float offWhite = 200.0f / 256.0f;
-		const Colour backgroundColour = Colour(offWhite, offWhite, offWhite);
+		const float lightLevel = 15.0f / 256.0f;
+		const Colour backgroundColour = Colour(lightLevel, lightLevel, lightLevel);
 
 		//Phong shading
+		float calculateDiffuseIntensity(ShadingInfo shadingInfo);
 		Colour computeDiffuse(ShadingInfo shadingInfo);
 		Colour computeSpecular(ShadingInfo shadingInfo);
 
 		//Global illumination.
 		Colour getNextLayerColour(ShadingInfo shadingInfo);
-		bool checkForShadow(ShadingInfo shadingInfo);		
+		float getShadowIntensity(ShadingInfo shadingInfo);
 		Colour checkForReflection(ShadingInfo shadingInfo);
 	};
 };

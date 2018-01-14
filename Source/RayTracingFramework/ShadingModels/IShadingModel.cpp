@@ -2,7 +2,7 @@
 
 
 RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeShading(RayTracingFramework::Ray& ray, RayTracingFramework::IScene& scene, int recursiveLevel) {
-	if (recursiveLevel == recursionLimit)
+	if (recursiveLevel >= recursionLimit)
 		return RayTracingFramework::Colour(0, 0, 0);
 
 	//Let's get the intersection we need to shade and the material applied to that point. 
@@ -24,8 +24,12 @@ RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeShading(R
 	
 	//Create ShadingInfo struct.
 	ShadingInfo shadingInfo = {
-		outputColour, scene, lightSource, material, collisionPointInWorld, normalInWorld, ray, intersection.collidingObjectID, recursiveLevel
+		outputColour, scene, lightSource, material, collisionPointInWorld, normalInWorld, ray, 
+		intersection.collidingObjectID, recursiveLevel, 0.0f, 
 	};
+
+	//Get intensity of shadow at collision point.
+	shadingInfo.shadowIntensity = getShadowIntensity(shadingInfo);
 
 	//Apply diffuse shading to output colour.
 	outputColour = computeDiffuse(shadingInfo);
@@ -39,10 +43,6 @@ RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeShading(R
 	//Apply specular shading.
 	outputColour = computeSpecular(shadingInfo);
 
-	//If shadow is found, reduce brightness.
-	if (checkForShadow(shadingInfo))
-		outputColour *= 0.5f;
-
 	return outputColour;
 }
 
@@ -52,25 +52,30 @@ RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeShading(R
 RayTracingFramework::Colour RayTracingFramework::IShadingModel::getNextLayerColour(ShadingInfo shadingInfo) {
 	//By default, set the colour of the next layer to the background colour.
 	Colour nextLayerColour = backgroundColour;
+	//Move origin of ray a little forward to prevent finding identical collision to the one that triggered this.
+	glm::vec4 origin = shadingInfo.collisionPoint + 0.1f * shadingInfo.ray.direction_InWorldCoords;
 	//Create a ray that is a continuing (identical) version of the ray that collided.
-	Ray continuingRay = Ray(shadingInfo.collisionPoint, shadingInfo.ray.direction_InWorldCoords);
+	Ray continuingRay = Ray(origin, shadingInfo.ray.direction_InWorldCoords);
 	//Test for collisions with scene.
 	shadingInfo.scene.getRootNode().testCollision(continuingRay, glm::mat4(1.0f));
 	
-	/*
 	//Remove any intersections found with the same object that triggered this check.
 	while (continuingRay.getClosestIntersection().collidingObjectID == shadingInfo.originalObjectId) continuingRay.discardClosestIntersection();
-	*/
 	
+	//Remove any intersections behind ray origin.
+	while (continuingRay.getClosestIntersection().t_distance < 0) continuingRay.discardClosestIntersection();
+
 	//Check if any other collisions occured.
 	if (continuingRay.getClosestIntersection().t_distance != FLT_MAX)
 		//Set colour of next layer to whatever the computed value of the next closest collision is.
-		nextLayerColour = computeShading(continuingRay, shadingInfo.scene, shadingInfo.recursiveLevel);
+		nextLayerColour = computeShading(continuingRay, shadingInfo.scene, shadingInfo.recursiveLevel + 1);
 	//Return current layer and next layer merged based on material.
 	return shadingInfo.outputColour * (1.0f - shadingInfo.material.K_t) + nextLayerColour * shadingInfo.material.K_t;
 }
 
-bool RayTracingFramework::IShadingModel::checkForShadow(ShadingInfo shadingInfo) {
+float RayTracingFramework::IShadingModel::getShadowIntensity(ShadingInfo shadingInfo) {
+	//By default, shadow intensity is zero.
+	float shadowIntensity = 0.0f;
 	//Fire shadow ray back towards light source.
 	glm::vec4 shadowRayDirection = -shadingInfo.lightSource->lightDirectionAtPoint(shadingInfo.collisionPoint);
 	//Origin of shadow ray is at collision point.
@@ -80,8 +85,21 @@ bool RayTracingFramework::IShadingModel::checkForShadow(ShadingInfo shadingInfo)
 	Ray shadowRay = Ray(shadowRayOrigin, shadowRayDirection);
 	//Test shadow ray for collisions with scene.
 	shadingInfo.scene.getRootNode().testCollision(shadowRay, glm::mat4(1.0f));
-	//Return true if any intersections occured, otherwise false.
-	return (shadowRay.getClosestIntersection().t_distance != FLT_MAX && shadowRay.getClosestIntersection().collidingObjectID != shadingInfo.originalObjectId);
+	//Get rid of self shadows.
+	while (shadowRay.getClosestIntersection().collidingObjectID == shadingInfo.originalObjectId)
+		shadowRay.discardClosestIntersection();
+	//Loop through any shadows found and discard so that we can combine multiple shadows.
+	while (shadowRay.getClosestIntersection().t_distance != FLT_MAX && shadowIntensity < 1.0f) {
+		//Get shadow forming object.
+		IVirtualObject& shadowObject = shadingInfo.scene.getNodeByID(shadowRay.getClosestIntersection().collidingObjectID);
+		//Calculate shadow intensity based on shadow object's transparency.
+		//Make sure it accumulates multiple shadows...
+		shadowIntensity += 1.0f - shadowObject.getMaterial().K_t;
+		//Discard and onto the next...
+		shadowRay.discardClosestIntersection();
+	}
+	//Cap at 1.0f
+	return (shadowIntensity > 1.0f) ? 1.0f : shadowIntensity;
 }
 
 RayTracingFramework::Colour RayTracingFramework::IShadingModel::checkForReflection(ShadingInfo shadingInfo) {
@@ -95,26 +113,32 @@ RayTracingFramework::Colour RayTracingFramework::IShadingModel::checkForReflecti
 	shadingInfo.scene.getRootNode().testCollision(reflectionRay, glm::mat4(1.0f));
 	//Initialise reflection colour as ambient background colour (White).
 	float offWhite = 200.0f / 256.0f;
-	Colour newColour = backgroundColour;
+	Colour reflectionColour = backgroundColour;
+	//Remove any intersections behind ray origin.
+	while (reflectionRay.getClosestIntersection().t_distance < 0) reflectionRay.discardClosestIntersection();
 	//Check if collision was found.
 	if (reflectionRay.getClosestIntersection().t_distance != FLT_MAX) {
 		//Compute shading for next surface found.
-		newColour = computeShading(reflectionRay, shadingInfo.scene, shadingInfo.recursiveLevel + 1);
+		reflectionColour = computeShading(reflectionRay, shadingInfo.scene, shadingInfo.recursiveLevel + 1);
 	}
+	//Apply diffuse intensity gradient to reflection.
+	Colour newColour = reflectionColour * shadingInfo.material.K_r * (calculateDiffuseIntensity(shadingInfo) + shadingInfo.material.K_a);
 	//Blend with output colour.
-	return shadingInfo.outputColour * (1.0f - shadingInfo.material.K_r) + newColour * shadingInfo.material.K_r;
+	return shadingInfo.outputColour * (1.0f - shadingInfo.material.K_r) + newColour;
 }
 
-RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeDiffuse(ShadingInfo shadingInfo) {
-
-	//K_d: DIFFUSE COMPONENT
-	RayTracingFramework::Colour diffuseComponent(0, 0, 0);
+float RayTracingFramework::IShadingModel::calculateDiffuseIntensity(ShadingInfo shadingInfo) {
 	glm::vec4 intersectionPointToLight_Direction = -1.0f * (shadingInfo.lightSource->lightDirectionAtPoint(shadingInfo.collisionPoint));
 	float cos_angle = glm::dot(shadingInfo.collisionNormal, intersectionPointToLight_Direction);
 	cos_angle = (cos_angle > 1 ? 1 : (cos_angle < 0 ? 0 : cos_angle));
-	//Simplest Lambertian model ( AND no light attenuation with distance)
-	diffuseComponent = cos_angle * shadingInfo.material.K_d * shadingInfo.material.diffuseColour * shadingInfo.lightSource->baseColour();
+	//Simplest Lambertian model (AND no light attenuation with distance)
+	return cos_angle * shadingInfo.material.K_d * (1.0f - shadingInfo.shadowIntensity);
+}
 
+RayTracingFramework::Colour RayTracingFramework::IShadingModel::computeDiffuse(ShadingInfo shadingInfo) {
+	//K_d: DIFFUSE COMPONENT
+	RayTracingFramework::Colour diffuseComponent(0, 0, 0);
+	diffuseComponent = calculateDiffuseIntensity(shadingInfo) * shadingInfo.material.diffuseColour * shadingInfo.lightSource->baseColour();
 	return shadingInfo.outputColour + diffuseComponent;
 }
 

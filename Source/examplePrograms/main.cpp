@@ -37,7 +37,7 @@ int main(int arg, char **argv)
 	int imageWidth = 600, imageHeight = 600;
 	CImg<unsigned char> img = CImg<unsigned char>(imageWidth, imageHeight, 1, 3);
 	//Fill with grey.
-	img.fill((const unsigned char)200);
+	img.fill((const unsigned char)15);
 	//Display image in window.
 	CImgDisplay disp(img, "Ray tracing output", false);
 	
@@ -68,7 +68,7 @@ int main(int arg, char **argv)
 
 			//Get scene, & compute shaded colour for this pixel. 
 			RayTracingFramework::IScene& scene = (RayTracingFramework::IScene&)RayTracingFramework::ISceneManager::instance();
-			RayTracingFramework::Colour shadedColour = scene.getShadingModel().computeShading(ray, scene, 2);
+			RayTracingFramework::Colour shadedColour = scene.getShadingModel().computeShading(ray, scene, 0);
 
 			//Assign the computed colour to the pixel in the output image.
 			img(c, r, 0) = (unsigned char)((shadedColour.r <= 1 ? shadedColour.r : 1) * 255);// (r % 256);
@@ -102,6 +102,18 @@ RayTracingFramework::IScene& createScene() {
 	//Create geometries, materials & virtual objects...
 	//(Upon creation, virtual objects are automatically added to the scene.)
 
+	//Horizontal plane
+	//Geometry
+	RayTracingFramework::IGeometry*g = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, -40, 0, 1), glm::vec4(0, 1, 0, 0));
+	//Material
+	RayTracingFramework::Material*m = new RayTracingFramework::Material;
+	m->K_a = 0.65f;
+	m->K_d = 0.85f;
+	m->K_r = 0.30f;
+	m->diffuseColour = RayTracingFramework::Colour(0.95f, 0.95f, 0.95f);
+	//Virtual Object
+	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
+
 	//Sphere
 	//Geometry
 	RayTracingFramework::IGeometry*g2 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(20);
@@ -109,15 +121,15 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::Material*m2 = new RayTracingFramework::Material;
 	m2->K_a = 0.15f;	//ambient coefficient
 	m2->K_d = 0.85f;	//diffuse coefficient
-	m2->K_s = 0.45f;		//specular coefficient
-	m2->K_r = 0.60f;	//reflectiveness
-	m2->K_t = 0.80f;	//transparency
+	m2->K_s = 0.45f;	//specular coefficient
+	m2->K_r = 0.45f;	//reflectiveness
+	m2->K_t = 0.60f;	//transparency
 	m2->shininess = 100.0f;
 	m2->diffuseColour = RayTracingFramework::Colour(0.05f, 0.70f, 0.20f);			
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* sphere = new RayTracingFramework::IVirtualObject(g2, m2, scene);
 	//Apply transformation
-	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(0, -10, 60)));
+	sphere->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-10, -10, 60)));
 
 	//Triangle
 	//Geometry
@@ -130,42 +142,62 @@ RayTracingFramework::IScene& createScene() {
 	RayTracingFramework::Material*m3 = new RayTracingFramework::Material;
 	m3->K_a = 0.15f;	//ambient coefficient
 	m3->K_d = 0.85f;	//diffuse coefficient
-	//m3->K_r = 0.70f;		//reflectiveness
+	m3->K_r = 0.30f;		//reflectiveness
 	m3->diffuseColour = RayTracingFramework::Colour(0.0f, 0.00f, 0.80f);
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* triangle = new RayTracingFramework::IVirtualObject(g3, m3, scene);
 	//Apply transformation
-	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-18, -10, 40)));
+	triangle->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-25, -10, 35)));
 
 	//Box
 	//Geometry
 	RayTracingFramework::IGeometry*g4 = (RayTracingFramework::IGeometry*)new RayTracingFramework::Box(
-		glm::vec4(-5.0f, 5.0f, -5.0f, 1.0f),
-		glm::vec4(5.0f, -5.0f, 5.0f, 1.0f)
+		glm::vec4(-5.0f, 15.0f, -5.0f, 1.0f),
+		glm::vec4(5.0f, -20.0f, 5.0f, 1.0f)
 	);
 	//Material
 	RayTracingFramework::Material*m4 = new RayTracingFramework::Material;
 	m4->K_a = 0.15f;	//ambient coefficient
 	m4->K_d = 0.85f;	//diffuse coefficient
-	//m4->K_r = 0.70f;		//reflectiveness
+	m4->K_r = 0.05f;		//reflectiveness
 	m4->diffuseColour = RayTracingFramework::Colour(0.8f, 0.0f, 0.0f);
 	//Virtual Object
 	RayTracingFramework::IVirtualObject* box = new RayTracingFramework::IVirtualObject(g4, m4, scene);
 	//Apply transformation
-	box->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(20.0f, -10.0f, 40.0f)));
+	box->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(28.0f, -20.0f, 60.0f)));
 
-	//Horizontal plane
+	//Sphere2
 	//Geometry
-	RayTracingFramework::IGeometry*g = (RayTracingFramework::IGeometry*)new RayTracingFramework::Plane(glm::vec4(0, -40, 0, 1), glm::vec4(0, 1, 0, 0));
+	RayTracingFramework::IGeometry*g5 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(15);
 	//Material
-	RayTracingFramework::Material*m = new RayTracingFramework::Material;
-	m->K_a = 0.15f;
-	m->K_d = 0.85f;
-	m->K_r = 0.30f;
-	m->diffuseColour = RayTracingFramework::Colour(0.7f, 0.3f, 0.7f);
+	RayTracingFramework::Material*m5 = new RayTracingFramework::Material;
+	m5->K_a = 0.15f;	//ambient coefficient
+	m5->K_d = 0.85f;	//diffuse coefficient
+	m5->K_s = 0.45f;	//specular coefficient
+	m5->K_r = 0.55f;	//reflectiveness
+	//m5->K_t = 0.00f;	//transparency
+	m5->shininess = 100.0f;
+	m5->diffuseColour = RayTracingFramework::Colour(0.30f, 0.00f, 0.60f);
 	//Virtual Object
-	RayTracingFramework::IVirtualObject* groundPlane = new RayTracingFramework::IVirtualObject(g, m, scene);
+	RayTracingFramework::IVirtualObject* sphere2 = new RayTracingFramework::IVirtualObject(g5, m5, scene);
+	//Apply transformation
+	sphere2->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(30, 15, 85)));
 
+	//Sphere3
+	//Geometry
+	RayTracingFramework::IGeometry*g6 = (RayTracingFramework::IGeometry*)new RayTracingFramework::ISphere(30);
+	//Material
+	RayTracingFramework::Material*m6 = new RayTracingFramework::Material;
+	m6->K_a = 0.45f;	//ambient coefficient
+	m6->K_d = 0.85f;	//diffuse coefficient
+	m6->K_s = 0.45f;	//specular coefficient
+	m6->K_r = 0.30f;	//reflectiveness
+	m6->shininess = 60.0f;
+	m6->diffuseColour = RayTracingFramework::Colour(0.85f, 0.65f, 0.35f);
+	//Virtual Object
+	RayTracingFramework::IVirtualObject* sphere3 = new RayTracingFramework::IVirtualObject(g6, m6, scene);
+	//Apply transformation
+	sphere3->setLocalToParent(glm::translate(glm::mat4(1.0f), glm::vec3(-30, 20, 95)));
 
 	//Create Lights
 
